@@ -1,46 +1,88 @@
-// Enemies our player must avoid
-var Enemy = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
+/*
+Enemy notes:
+1. All variables applied to each instance go here.
+    a. The enemy image/sprite as well as a helper to easily load images have been provided.
 
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
+2. Required enemy methods, properties, and functionality:
+    a. Method - Render the enemy on the screen
+    b. Method - update the enemy's position
+        b1. Parameter - dt, a time delta between ticks
+        b2. Functionality - multiply moves by dt so game runs at same speed for all PCs.
+*/
+
+//Enemy class with update and render methods
+class Enemy {
+    constructor() {
+        this.x = 0,
+        this.y = 55,
+        this.sprite = ['images/enemy-bug.png'],
+        this.step = 101,
+        this.boundary = this.step * 5,
+        this.resetPos = -this.step
+    }
+    update(dt) {
+        if (this.x < this.boundary) {
+            this.x += 200 * dt;
+        } else {
+            this.x = this.resetPos;
+        }
+    }
+    render() {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    }
+}
+
+/*
+Player class notes:
+1. Write a player class with the following methods:
+    a. update()
+    b. render()
+    c. handleInput()
+*/
+
+//Hero class with render, update, and handleInput methods
+class Player {
+    constructor() {
+        this.x = 0,
+        this.y = 0,
+        this.sprite = ['images/char-boy.png']
+    }
+    render() {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    }
+    update(dt) {
+
+    }
+    handleInput() {
+
+    }
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
-Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
-};
+/*
+Object instantiation:
+1. Place all enemy objects in an array called allEnemies
+2. Place the player object in a variable called player
+*/
 
-// Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
-
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+const allEnemies = [];
+const player = new Player();
+const bug1 = new Enemy();
+const bug2 = new Enemy();
+const bug3 = new Enemy();
+allEnemies.push(bug1, bug2, bug3);
+console.log(allEnemies);
 
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
-
-
-
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
-document.addEventListener('keyup', function(e) {
+/*
+Key Press event listener notes:
+1. listen for key presses and send keys to Player.handleInput() method.
+*/
+document.addEventListener('keyup', function (e) {
     var allowedKeys = {
         37: 'left',
         38: 'up',
         39: 'right',
         40: 'down'
-    };
-
+    }
     player.handleInput(allowedKeys[e.keyCode]);
 });
