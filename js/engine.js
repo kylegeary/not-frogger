@@ -26,9 +26,9 @@ lastTime,
 id;
 
 const modal = document.querySelector('.modal__container');
-const replay = document.querySelector('.modal__button');
+const playAgain = document.querySelector('.modal__button');
 
-replay.addEventListener('click', function() {
+playAgain.addEventListener('click', function() {
     modal.classList.toggle('hide');
     player.reset();
     player.victory = false;
