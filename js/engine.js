@@ -1,16 +1,16 @@
 /* Engine.js
- * This file provides the game loop functionality (update entities and render),
- * draws the initial game board on the screen, and then calls the update and
- * render methods on your player and enemy objects (defined in your app.js).
- *
- * A game engine works by drawing the entire game screen over and over, kind of
- * like a flipbook you may have created as a kid. When your player moves across
- * the screen, it may look like just that image/character is moving or being
- * drawn but that is not the case. What's really happening is the entire "scene"
- * is being drawn over and over, presenting the illusion of animation.
- *
- * This engine makes the canvas' context (ctx) object globally available to make
- * writing app.js a little simpler to work with.
+ This file provides the game loop functionality (update entities and render),
+ draws the initial game board on the screen, and then calls the update and
+ render methods on your player and enemy objects (defined in your app.js).
+
+ A game engine works by drawing the entire game screen over and over, kind of
+ like a flipbook you may have created as a kid. When your player moves across
+ the screen, it may look like just that image/character is moving or being
+ drawn but that is not the case. What's really happening is the entire "scene"
+ is being drawn over and over, presenting the illusion of animation.
+
+ This engine makes the canvas' context (ctx) object globally available to make
+ writing app.js a little simpler to work with.
  */
 
 var Engine = (function(global) {
@@ -22,7 +22,18 @@ var doc = global.document,
 win = global.window,
 canvas = doc.createElement('canvas'),
 ctx = canvas.getContext('2d'),
-lastTime;
+lastTime,
+id;
+
+const modal = document.querySelector('.modal__container');
+const replay = document.querySelector('.modal__button');
+
+replay.addEventListener('click', function() {
+    modal.classList.toggle('hide');
+    player.reset();
+    player.victory = false;
+    win.requestAnimationFrame(main);
+});
 
     canvas.width = 505;
     canvas.height = 606;
@@ -55,8 +66,13 @@ lastTime;
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        win.requestAnimationFrame(main);
+        if (player.victory === true) {
+            win.cancelAnimationFrame(id);
+            modal.classList.remove('hide');
+        } else {
+        id = win.requestAnimationFrame(main);
     }
+}
 
     /* This function does some initial setup that should only occur once,
      * particularly setting the lastTime variable that is required for the
@@ -90,10 +106,10 @@ lastTime;
      * render methods.
      */
     function updateEntities(dt) {
-    //    allEnemies.forEach(function(enemy) {
-    //        enemy.update(dt);
-    //    });
-    //    player.update();
+        allEnemies.forEach(function(enemy) {
+            enemy.update(dt);
+    });
+        player.update();
     }
 
     /* This function initially draws the "game level", it will then call

@@ -1,28 +1,19 @@
-/*
-Enemy notes:
-1. All variables applied to each instance go here.
-    a. The enemy image/sprite as well as a helper to easily load images have been provided.
 
-2. Required enemy methods, properties, and functionality:
-    a. Method - Render the enemy on the screen
-    b. Method - update the enemy's position
-        b1. Parameter - dt, a time delta between ticks
-        b2. Functionality - multiply moves by dt so game runs at same speed for all PCs.
-*/
+/* ENEMY CLASS - with render and update methods. All moves multiplied by dt */
 
-//Enemy class with update and render methods
 class Enemy {
-    constructor() {
-        this.x = 0,
-        this.y = 55,
-        this.sprite = ['images/enemy-bug.png'],
+    constructor(x,y, speed) {
+        this.x = x,
+        this.y = y+55,
+        this.sprite = 'images/enemy-bug.png',
         this.step = 101,
         this.boundary = this.step * 5,
-        this.resetPos = -this.step
+        this.resetPos = -this.step,
+        this.speed = speed
     }
     update(dt) {
         if (this.x < this.boundary) {
-            this.x += 200 * dt;
+            this.x += this.speed * dt;
         } else {
             this.x = this.resetPos;
         }
@@ -32,29 +23,61 @@ class Enemy {
     }
 }
 
-/*
-Player class notes:
-1. Write a player class with the following methods:
-    a. update()
-    b. render()
-    c. handleInput()
-*/
+/* PLAYER CLASS - with update, render, and handleInput methods */
 
-//Hero class with render, update, and handleInput methods
 class Player {
     constructor() {
-        this.x = 0,
-        this.y = 0,
-        this.sprite = ['images/char-boy.png']
+        this.sprite = 'images/char-boy.png';
+        this.step = 101;
+        this.jump = 83;
+        this.startX = this.step * 2;
+        this.startY = (this.jump * 4) + 55;
+        this.x = this.startX;
+        this.y = this.startY;
+        this.victory = false;
+    }
+    reset() {
+        this.x = this.startX;
+        this.y = this.startY;
     }
     render() {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
-    update(dt) {
-
+    update() {
+        for (let enemy of allEnemies){
+            if (this.y === enemy.y
+                && (enemy.x + enemy.step/2 > this.x
+                && enemy.x < this.x + this.step/2)){
+                this.reset();
+            }
+        }
+        if (this.y == 55){
+            this.victory = true;
+        }
     }
-    handleInput() {
-
+    handleInput(input) {
+        switch (input) {
+            case 'left':
+                if (this.x > 0) {
+                    this.x -= this.step;
+                }
+                break;
+            case 'right':
+                if (this.x < this.step * 4){
+                    this.x += this.step;
+                }
+                break;
+            case 'down':
+                if (this.y < this.jump * 4){
+                    this.y += this.jump;
+                }
+                break;
+            case 'up':
+                if (this.y > this.jump){
+                    this.y -= this.jump;
+                }
+                break;
+        }
     }
 };
 
@@ -66,11 +89,10 @@ Object instantiation:
 
 const allEnemies = [];
 const player = new Player();
-const bug1 = new Enemy();
-const bug2 = new Enemy();
-const bug3 = new Enemy();
+const bug1 = new Enemy(-101,0,200);
+const bug2 = new Enemy(-101,83,300);
+const bug3 = new Enemy((-101*2.5),83,300);
 allEnemies.push(bug1, bug2, bug3);
-console.log(allEnemies);
 
 
 /*
